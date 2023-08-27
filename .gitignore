@@ -1,0 +1,33 @@
+# Node ignore file
+node_modules
+
+# Bower components folder
+bower_components
+
+# Compiled files
+dist
+
+# Local env files
+.env
+
+# OS generated files
+.DS_Store
+
+# Logs
+logs
+
+# Build folder
+build
+
+# Coverage folder used by tools like istanbul
+coverage
+
+# Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# JSHint cache file
+.jshintcache
+
+
+# Compiled TypeScript declaration files
+*.d.ts
