@@ -1,96 +1,80 @@
-const Node = require('./node');
-
 class Graph {
   constructor() {
-    this.nodes = {};
+    this.nodes = {}; // Un objeto para almacenar los nodos del grafo
   }
 
+  // Método para agregar un nodo al grafo
   addNode(name) {
-    this.nodes[name] = new Node(name);
+    this.nodes[name] = {}; // Usamos un objeto vacío para representar los vecinos de un nodo
   }
 
-  addEdge(source, target, weight) {
-    this.nodes[source].addNeighbor(target, weight);
-    this.nodes[target].addNeighbor(source, weight);
+  // Método para agregar una conexión (arista) entre dos nodos con un peso
+  addEdge(node1, node2, weight) {
+    this.nodes[node1][node2] = weight;
+    this.nodes[node2][node1] = weight; // Como es un grafo no dirigido, agregamos conexiones en ambas direcciones
   }
 
-  dijkstra(startNode) {
-    const distances = {};
-    const visited = {};
-    const previousNodes = {};
-
-    for (const node in this.nodes) {
-      distances[node] = Infinity;
-      previousNodes[node] = null;
-    }
-    distances[startNode] = 0;
-
-    while (true) {
+  // Método para enviar un mensaje desde un nodo de origen a un nodo de destino
+  sendMessage(from, to, message) {
+    // Función para encontrar el nodo con la distancia más corta en el conjunto de nodos no visitados
+    function findClosestNode(distances, visitedNodes) {
       let closestNode = null;
       let shortestDistance = Infinity;
-
+  
       for (const node in distances) {
-        if (!visited[node] && distances[node] < shortestDistance) {
+        if (!visitedNodes[node] && distances[node] < shortestDistance) {
           closestNode = node;
           shortestDistance = distances[node];
         }
       }
-
+  
+      return closestNode;
+    }
+  
+    // Inicializar las estructuras de datos necesarias para el algoritmo de Dijkstra
+    const distances = {};
+    const previousNodes = {};
+    const visitedNodes = {};
+  
+    for (const node in this.nodes) {
+      distances[node] = Infinity;
+      previousNodes[node] = null;
+    }
+  
+    distances[from] = 0;
+  
+    // Aplicar el algoritmo de Dijkstra
+    while (true) {
+      const closestNode = findClosestNode(distances, visitedNodes);
+  
       if (closestNode === null) {
         break;
       }
-
-      visited[closestNode] = true;
-
-      for (const neighbor in this.nodes[closestNode].neighbors) {
-        const distance = shortestDistance + this.nodes[closestNode].neighbors[neighbor];
+  
+      visitedNodes[closestNode] = true;
+  
+      for (const neighbor in this.nodes[closestNode]) {
+        const distance = distances[closestNode] + this.nodes[closestNode][neighbor];
+  
         if (distance < distances[neighbor]) {
           distances[neighbor] = distance;
           previousNodes[neighbor] = closestNode;
         }
       }
     }
-
-    const shortestPath = {};
-    for (const node in distances) {
-      const path = [];
-      let current = node;
-      while (current !== startNode) {
-        path.unshift(current);
-        current = previousNodes[current];
-      }
-      path.unshift(startNode);
-      shortestPath[node] = { distance: distances[node], path: path };
-    }
-
-    return { distances, shortestPath };
-  }
-
-  sendMessage(from, to, message) {
-    const shortestPathInfo = this.dijkstra(from);
-    const shortestPath = shortestPathInfo.shortestPath[to];
   
-    if (!shortestPath) {
-      console.log(`No se puede enviar el mensaje desde ${from} a ${to}. No hay una conexión directa.`);
-      return;
+    // Reconstruir el camino más corto desde 'from' hasta 'to'
+    const shortestPath = [to];
+    let current = to;
+  
+    while (current !== from) {
+      current = previousNodes[current];
+      shortestPath.unshift(current);
     }
   
-    const headers = {
-      from: from,
-      to: to,
-      hop_count: shortestPath.length - 1,
-    };
-  
-    const messageObject = {
-      type: "message",
-      headers: headers,
-      payload: message,
-    };
-  
-    console.log(`Mensaje enviado de ${from} a ${to}:`, messageObject);
-  
-    // Ahora llamamos al método receiveMessage del nodo de destino
-    this.nodes[to].receiveMessage(JSON.stringify(headers));
+    // Enviar el mensaje al nodo de destino
+    console.log(`Mensaje enviado de ${from} a ${to}: ${message}`);
+    console.log(`Ruta: ${shortestPath.join(" -> ")}`);
   }
 }
 

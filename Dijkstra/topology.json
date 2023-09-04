@@ -1,8 +1,0 @@
-{
-    "nodes": [
-        {"name": "Node1", "neighbors": ["Node2"]},
-        {"name": "Node2", "neighbors": ["Node1", "Node3"]},
-        {"name": "Node3", "neighbors": ["Node2"]}
-    ]
-}
-  
