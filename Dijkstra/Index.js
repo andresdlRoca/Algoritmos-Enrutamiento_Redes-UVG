@@ -11,9 +11,24 @@ const graph = new Graph();
 graph.addNode("A");
 graph.addNode("B");
 graph.addNode("C");
+graph.addNode("D");
+graph.addNode("E");
+graph.addNode("F");
+graph.addNode("G");
+graph.addNode("H");
+graph.addNode("I");
 
-graph.addEdge("A", "B", 2);
-graph.addEdge("B", "C", 3);
+graph.addEdge("A", "B", 7);
+graph.addEdge("A", "C", 7);
+graph.addEdge("A", "I", 1);
+graph.addEdge("B", "F", 2);
+graph.addEdge("F", "D", 1);
+graph.addEdge("I", "D", 6);
+graph.addEdge("C", "D", 5);
+graph.addEdge("F", "H", 4);
+graph.addEdge("F", "G", 3);
+graph.addEdge("D", "E", 1);
+graph.addEdge("G", "E", 4);
 
 function displayMenu() {
   console.log("--- Menú ---");
