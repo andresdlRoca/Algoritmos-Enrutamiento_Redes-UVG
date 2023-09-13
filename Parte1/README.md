@@ -10,9 +10,6 @@ En concreto durante la práctica lo que se realizará es utilizar los algoritmos
 - [Dijkstra]()
 - [Distance Vector](./DistanceVector/)
 
-## Parte 2 
-<b>WIP</b>
-
 ## Autores
 👤 Jun Woo Lee
 
